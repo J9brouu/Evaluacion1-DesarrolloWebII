@@ -1,0 +1,36 @@
+/* Estilos personalizados para la página de inicio del inventario de juegos */
+:root{
+  --bg-start: #0f172a;
+  --bg-end: #0f3460;
+  --accent: #8b5cf6;
+}
+body{
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(135deg,var(--bg-start),var(--bg-end));
+  color: #f8fafc;
+}
+.bg-gradient{background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(15,52,96,0.95) 100%);} 
+.glass{background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(6px);} 
+.stat-card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: none; color: #e6eef8;}
+.stat-card h3{color:#fff}
+
+.card.title-card{background: rgba(255,255,255,0.02);}
+
+/* Tabla */
+.table thead th{border-bottom: none}
+.table tbody tr:hover{background: rgba(255,255,255,0.02)}
+
+/* Botones */
+.btn-primary{
+  background: linear-gradient(90deg,var(--accent), #06b6d4);
+  border: none;
+}
+.btn-primary:hover{opacity:0.95}
+
+/* Pequeños refinamientos */
+.card img{max-height:260px; object-fit:cover}
+.shadow-lg{box-shadow: 0 10px 30px rgba(2,6,23,0.6)!important}
+
+@media (max-width: 767px){
+  .display-5{font-size:1.6rem}
+}
