@@ -31,6 +31,23 @@
                         <li class="nav-item"><a class="nav-link" href="#inventario">Inventario</a></li>
                         <li class="nav-item"><a class="nav-link" href="#agregar">Agregar juego</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                        <!-- Mostrar usuario conectado y opción de logout si existe sesión -->
+                        <li class="nav-item dropdown" th:if="${user}">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <span th:text="${user.username}">Usuario</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item" th:href="@{/form-crear}">Mi panel</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post" style="margin:0;">
+                                        <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" th:if="${user == null}"><a class="nav-link" href="/login">Iniciar sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -40,18 +57,19 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-7 text-white">
-                        <h1 class="display-5 fw-bold">Bienvenido al Inventario de Juegos</h1>
-                        <p class="lead mb-4">Organiza, consulta y gestiona tu colección de videojuegos. Visualiza estadísticas, géneros, plataformas y controla el stock con facilidad.</p>
-                        <div class="d-flex gap-2">
-                            <a href="#agregar" class="btn btn-primary btn-lg shadow">Agregar juego <i class="bi bi-plus-circle ms-2"></i></a>
-                            <a href="#inventario" class="btn btn-outline-light btn-lg">Ver inventario</a>
+                        <h1 class="display-5 fw-bold black">Bienvenido al Inventario de Juegos</h1>
+                        <p class="lead mb-4 black">Organiza, consulta y gestiona tu colección de videojuegos. Visualiza estadísticas, géneros, plataformas y controla el stock con facilidad.</p>
+                        <div class="col-lg-7 d-flex gap-2">
+                            <a href="/form-crear" class="btn btn-primary btn-lg shadow">Agregar juego <i class="bi bi-plus-circle ms-2"></i></a>
+                            <a href="#inventario" class="btn btn-outline-black btn-lg shadow">Ver inventario</a>
                         </div>
                     </div>
                     <div class="col-lg-5 mt-4 mt-lg-0">
                         <div class="card glass p-3 shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1605902711622-cfb43c44367e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=0" alt="juegos" class="img-fluid rounded">
+                            <!-- La imagen debe estar en static/assets para que Spring la sirva en /assets/... -->
+                            <img src="/assets/libraryofgames.png" alt="juegos" class="img-fluid rounded">
                             <div class="pt-3">
-                                <h5 class="mb-0">Tu colección en un solo lugar</h5>
+                                <h5 class="mb-0 black">Tu colección en un solo lugar</h5>
                                 <small class="text-muted">Rápido, sencillo y visual.</small>
                             </div>
                         </div>
@@ -66,25 +84,25 @@
                 <div class="row g-4 mb-4">
                     <div class="col-md-3">
                         <div class="card stat-card p-3 text-center">
-                            <h3 class="mb-0">128</h3>
+                            <h2 class="mb-0 black">128</h2>
                             <small class="text-muted">Total de juegos</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card stat-card p-3 text-center">
-                            <h3 class="mb-0">18</h3>
+                            <h2 class="mb-0 black">18</h2>
                             <small class="text-muted">Géneros</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card stat-card p-3 text-center">
-                            <h3 class="mb-0">9</h3>
+                            <h2 class="mb-0 black">9</h2>
                             <small class="text-muted">Plataformas</small>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card stat-card p-3 text-center">
-                            <h3 class="mb-0">86</h3>
+                            <h2 class="mb-0 black">86</h2>
                             <small class="text-muted">En stock</small>
                         </div>
                     </div>
@@ -96,49 +114,38 @@
                         <div class="card-body">
                             <h5 class="card-title">Últimos añadidos</h5>
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Juego</th>
-                                            <th>Género</th>
-                                            <th>Plataforma</th>
-                                            <th>Stock</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Horizon Forbidden West</td>
-                                            <td>Aventura</td>
-                                            <td>PS5</td>
-                                            <td><span class="badge bg-success">12</span></td>
-                                            <td>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                <a href="#" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Legend of Zelda: Tears</td>
-                                            <td>Acción</td>
-                                            <td>Switch</td>
-                                            <td><span class="badge bg-warning text-dark">4</span></td>
-                                            <td>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                <a href="#" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Forza Horizon 5</td>
-                                            <td>Carreras</td>
-                                            <td>Xbox</td>
-                                            <td><span class="badge bg-success">9</span></td>
-                                            <td>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                <a href="#" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                <table class="table table-hover align-middle">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Imagen</th>
+                                                            <th>Juego</th>
+                                                            <th>Género</th>
+                                                            <th>Plataforma</th>
+                                                            <th>Stock</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody th:if="${juegos}">
+                                                        <tr th:each="g : ${juegos}">
+                                                            <td>
+                                                                <img th:src="${g.imagen}" alt="portada" class="game-thumb" onerror="this.src='/assets/libraryofgames.png'" />
+                                                            </td>
+                                                            <td th:text="${g.titulo}"></td>
+                                                            <td th:text="${g.genero}"></td>
+                                                            <td th:text="${g.plataforma}"></td>
+                                                            <td>
+                                                                <span th:classappend="${g.stock > 5} ? 'badge bg-success' : (${g.stock > 0} ? 'badge bg-warning text-dark' : 'badge bg-danger')" th:text="${g.stock}"></span>
+                                                            </td>
+                                                            <td>
+                                                                <a th:href="@{/juegos/{id}(id=${g.id})}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                                <a th:href="@{/form-editar(id=${g.id})}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                                                <form th:action="@{/juegos/{id}/eliminar(id=${g.id})}" method="post" style="display:inline-block; margin-left:6px;">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este juego?')">Eliminar</button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                             </div>
                         </div>
                     </div>
@@ -146,16 +153,16 @@
 
                 <!-- CTA -->
                 <section id="agregar" class="text-center my-5">
-                    <h3>Añade tu próximo juego favorito</h3>
+                    <h3 class="black">Añade tu próximo juego favorito</h3>
                     <p class="text-muted">Registra título, plataforma, género y cantidad en stock.</p>
-                    <a href="#" class="btn btn-lg btn-success">Agregar nuevo juego <i class="bi bi-plus-lg ms-2"></i></a>
+                    <a href="/form-crear" class="btn btn-lg btn-success">Agregar nuevo juego <i class="bi bi-plus-lg ms-2"></i></a>
                 </section>
             </div>
         </main>
 
         <footer class="py-4 bg-dark text-white">
             <div class="container d-flex justify-content-between align-items-center">
-                <small>&copy; 2025 GameInventory — Hecho con ❤️</small>
+                <small>&copy; 2025 GameInventory. todos los derechos reservados</small>
                 <div>
                     <a href="#" class="text-white text-decoration-none me-3">Privacidad</a>
                     <a href="#" class="text-white text-decoration-none">Soporte</a>

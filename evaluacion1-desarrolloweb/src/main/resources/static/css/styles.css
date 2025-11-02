@@ -34,3 +34,37 @@ body{
 @media (max-width: 767px){
   .display-5{font-size:1.6rem}
 }
+
+/* ---------- Ajustes para contraste y legibilidad ---------- */
+/* Forzar que las tarjetas estándar muestren texto oscuro sobre fondo claro */
+.card:not(.glass){
+  color: #0b1220; /* texto oscuro para cards / tablas */
+}
+
+/* Mantener texto claro en el header 'glass' */
+.glass{
+  color: #ffffff;
+}
+
+/* Navbar: asegurar contraste */
+.navbar .nav-link{color: rgba(255,255,255,0.95)!important}
+.navbar .nav-link.active{font-weight:600}
+
+/* Miniaturas de juego en tabla */
+.game-thumb{width:72px; height:48px; object-fit:cover; border-radius:6px}
+
+/* Tabla: asegurar texto oscuro dentro de tarjetas blancas */
+.card .table thead th, .card .table tbody td{color: #0b1220}
+
+/* Utilidad: texto oscuro consistente */
+.black{color: #0b1220 !important}
+
+/* Estilos para el formulario de creación */
+.form-card{border-radius:12px; padding:1.25rem}
+.form-label{font-weight:600; color:#0b1220}
+.form-help{font-size:0.9rem; color:#6b7280}
+.input-file{border:1px dashed rgba(11,18,32,0.08); padding:0.6rem; border-radius:8px}
+
+.black {
+  color: #000000;
+}
