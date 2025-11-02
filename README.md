@@ -51,5 +51,3 @@ Abrir en el navegador:
 - `src/main/java/.../service` — lógica (GameService, UserService)
 - `src/main/resources/templates` — vistas Thymeleaf
 - `src/main/resources/static` — css / assets
-
-Si quieres, genero también badges, un CHANGELOG.md o publico esta documentación en `docs/WIKI.md` en la wiki del repo.
