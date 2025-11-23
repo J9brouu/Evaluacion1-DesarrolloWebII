@@ -10,14 +10,8 @@
 		<link rel="stylesheet" href="/css/styles.css">
 	</head>
 	<body class="bg-gradient">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-			<div class="container">
-				<a class="navbar-brand d-flex align-items-center" href="/">
-					<i class="bi bi-controller display-6 me-2"></i>
-					<span class="fs-5">GameInventory</span>
-				</a>
-			</div>
-		</nav>
+		 <header th:replace="fragments/navbar :: navbar"></header>
+
 
 		<main class="py-5">
 			<div class="container">
@@ -26,15 +20,23 @@
 						<div class="card shadow-sm">
 							<div class="card-body">
 								<div class="d-flex gap-4">
-									<img th:src="${juego.imagen}" alt="portada" class="img-thumbnail" style="width:220px; height:auto; object-fit:cover;" onerror="this.src='/assets/libraryofgames.png'">
-									<div>
-										<h2 class="black" th:text="${juego.titulo}"></h2>
-										<p class="mb-1"><strong>Género:</strong> <span th:text="${juego.genero}"></span></p>
-										<p class="mb-1"><strong>Plataforma:</strong> <span th:text="${juego.plataforma}"></span></p>
-										<p class="mb-1"><strong>Stock:</strong> <span th:text="${juego.stock}"></span></p>
-										<p class="mb-3"><strong>Precio:</strong> $<span th:text="${juego.precio}"></span> CLP</p>
+										<!-- portada estática -->
+										<img th:src="@{/assets/libraryofgames.png}" alt="portada" class="img-thumbnail" style="width:220px; height:auto; object-fit:cover;">
+                                         <div>
+                                             <h2 class="black" th:text="${juego.titulo}"></h2>
+                                             <p class="mb-1"><strong>Género:</strong> <span th:text="${juego.genero}"></span></p>
+                                             <p class="mb-1"><strong>Plataforma:</strong> <span th:text="${juego.plataforma}"></span></p>
+                                             <p class="mb-1"><strong>Stock:</strong> <span th:text="${juego.stock}"></span></p>
+                                             <p class="mb-3"><strong>Precio:</strong> $<span th:text="${juego.precio}"></span> CLP</p>
 										<div class="d-flex gap-2">
-											<a th:href="@{/form-editar(id=${juego.id})}" class="btn btn-outline-secondary">Editar</a>
+											<span th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">
+												<a th:href="@{/form-editar(id=${juego.id})}" class="btn btn-outline-secondary">Editar</a>
+											</span>
+
+											<span th:if="${user != null and (#strings.toLowerCase(user.rol) == 'user' or #strings.toLowerCase(user.rol) == 'usuario')}">
+												<a th:href="@{/pedidos/crear(juegoId=${juego.id})}" class="btn btn-success">Comprar</a>
+											</span>
+
 											<a href="/index" class="btn btn-primary">Volver</a>
 										</div>
 									</div>
@@ -46,11 +48,7 @@
 			</div>
 		</main>
 
-		<footer class="py-4 bg-dark text-white mt-5">
-			<div class="container d-flex justify-content-between align-items-center">
-				<small>&copy; 2025 GameInventory</small>
-			</div>
-		</footer>
+		 <div th:replace="fragments/footer :: footer"></div>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	</body>

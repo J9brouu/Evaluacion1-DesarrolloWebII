@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar usuario — GameInventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body class="bg-gradient">
+
+     <header th:replace="fragments/navbar :: navbar"></header>
+
+
+    <!-- CONTENIDO -->
+    <main class="container my-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Editar usuario</h5>
+            <a class="btn btn-outline-secondary" href="/user/list"><i class="bi bi-arrow-left"></i> Volver</a>
+          </div>
+
+          <!-- Formulario de edición usando el objeto 'target' -->
+          <form th:action="@{/user/update}" method="post" class="row g-3">
+            <input type="hidden" name="id" th:value="${target != null ? target.id : ''}" />
+
+            <div class="col-md-6" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">
+              <label for="rut" class="form-label">Usuario (RUT)</label>
+              <input type="text" class="form-control" id="rut" name="rut" th:value="${target != null ? target.rut : ''}" required>
+            </div>
+            <div class="col-md-6">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" th:value="${target != null ? target.nombre : ''}" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="apellido" name="apellido" th:value="${target != null ? target.apellido : ''}">
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" th:value="${target != null ? target.email : ''}">
+            </div>
+
+            <div class="col-md-6">
+              <label for="password" class="form-label">Contraseña nueva</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco para no cambiar">
+            </div>
+
+            <div class="col-md-6">
+              <label for="confirm" class="form-label">Confirmar contraseña</label>
+              <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Repita la contraseña">
+            </div>
+
+            <div class="col-md-6" th:if="${target != null and user != null and target.id == user.id}">
+              <label for="oldPassword" class="form-label">Contraseña actual</label>
+              <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Ingrese su contraseña actual para confirmar cambios">
+            </div>
+
+            <div class="col-md-6" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">
+              <label for="role" class="form-label">Rol</label>
+              <select id="role" name="role" class="form-select">
+                <option th:value="'USER'" th:selected="${target != null and (#strings.toLowerCase(target.rol) == 'user')}">USER</option>
+                <option th:value="'ADMIN'" th:selected="${target != null and (#strings.toLowerCase(target.rol) == 'admin')}">ADMIN</option>
+              </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+              <a class="btn btn-secondary" th:href="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator') ? '/user/list' : '/user/profile'}">Cancelar</a>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar cambios</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </main>
+
+     <div th:replace="fragments/footer :: footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<div th:fragment="navbar">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" th:href="@{/index}">GameInventory</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" th:href="@{/index}">Inicio</a></li>
+          <li class="nav-item" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}"><a class="nav-link" th:href="@{/form-crear}">Agregar juego</a></li>
+          <li class="nav-item" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}"><a class="nav-link" th:href="@{/user/list}">Usuarios</a></li>
+          <li class="nav-item" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'user' or #strings.toLowerCase(user.rol) == 'usuario')}"><a class="nav-link" th:href="@{/index#inventario}">Inventario</a></li>
+          <li class="nav-item" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'user' or #strings.toLowerCase(user.rol) == 'usuario')}"><a class="nav-link" th:href="@{/pedidos/mis}">Mis pedidos</a></li>
+          <li class="nav-item" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}"><a class="nav-link" th:href="@{/pedidos/listar}">Pedidos</a></li>
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" th:if="${user == null}">
+            <a class="nav-link" th:href="@{/login}">Iniciar sesión</a>
+          </li>
+          <li class="nav-item dropdown" th:if="${user != null}">
+            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i> <span th:text="${user.nombre}">Usuario</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+              <li><a class="dropdown-item" th:href="@{/user/profile}">Mi perfil</a></li>
+              <li><hr class="dropdown-divider"/></li>
+              <li>
+                <form th:action="@{/logout}" method="get" class="d-inline">
+                  <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>

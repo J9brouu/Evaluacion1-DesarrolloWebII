@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pedidos — GameInventory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body class="bg-gradient">
+    <header th:replace="fragments/navbar :: navbar"></header>
+
+    <main class="container my-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Pedidos</h5>
+            <div>
+              <a th:if="${user != null}" class="btn btn-primary" th:href="@{/pedidos/crear}"><i class="bi bi-plus-lg"></i> Nuevo pedido</a>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Producto</th>
+                  <th scope="col" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">Cliente</th>
+                  <th scope="col">Cantidad</th>
+                  <th scope="col">Fecha de creación</th>
+                  <th scope="col">Fecha de actualización</th>
+                  <th scope="col" class="text-end" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${pedidos}">
+                  <td th:text="${p.id}">1</td>
+                  <td th:text="${p.producto}">Producto A</td>
+                  <td th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}" th:text="${p.usuarioId != null ? p.usuarioId.nombre + ' ' + p.usuarioId.apellido : 'Sin Cliente'}">Juan Pérez</td>
+                  <td th:text="${p.cantidad}">5</td>
+                  <td th:text="${p.createAt != null ? #dates.format(p.createAt, 'dd-MM-yyyy') : 'Sin Fecha'}">15/11/2025</td>
+                  <td th:text="${p.updateAt != null ? #dates.format(p.updateAt, 'dd-MM-yyyy') : 'Sin Fecha'}">16/11/2025</td>
+                  <td class="text-end" th:if="${user != null and (#strings.toLowerCase(user.rol) == 'admin' or #strings.toLowerCase(user.rol) == 'administrator')}">
+                    <div class="btn-group" role="group" aria-label="Acciones">
+                      <!-- Editar: envia a /pedidos/editar?id=... -->
+                      <a th:href="@{/pedidos/edit/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary" title="Editar Pedido">
+                        <i class="bi bi-pencil"></i> Editar
+                      </a>
+
+                      <!-- Eliminar usando POST (más seguro) -->
+                      <form th:action="@{/pedidos/{id}/delete(id=${p.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Pedido" onclick="return confirm('Confirmar eliminación?');">
+                          <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(pedidos)}">
+                  <td colspan="6" class="text-center text-muted">No hay pedidos registrados.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="fragments/footer :: footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
