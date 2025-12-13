@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Evaluacion1DesarrollowebApplication<evaluacion1-desarrolloweb>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.evaluacion1_desarrolloweb.Evaluacion1DesarrollowebApplication",
+            "projectName": "evaluacion1-desarrolloweb",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

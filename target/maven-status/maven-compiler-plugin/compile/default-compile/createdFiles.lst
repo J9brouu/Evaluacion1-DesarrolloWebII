@@ -1,0 +1,10 @@
+com\example\evaluacion1_desarrolloweb\service\impl\JuegosServiceImpl.class
+com\example\evaluacion1_desarrolloweb\service\JuegosService.class
+com\example\evaluacion1_desarrolloweb\dao\IJuegosDao.class
+com\example\evaluacion1_desarrolloweb\service\impl\UsuarioServiceImpl.class
+com\example\evaluacion1_desarrolloweb\config\SecurityConfig.class
+com\example\evaluacion1_desarrolloweb\controller\GlobalModelAttributeAdvice.class
+com\example\evaluacion1_desarrolloweb\entity\Juegos.class
+com\example\evaluacion1_desarrolloweb\Evaluacion1DesarrollowebApplication.class
+com\example\evaluacion1_desarrolloweb\dao\IUsuarioDao.class
+com\example\evaluacion1_desarrolloweb\service\UsuarioService.class

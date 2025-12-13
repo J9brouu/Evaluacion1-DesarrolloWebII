@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar usuario — GameInventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body class="bg-gradient">
+
+     <header th:replace="fragments/navbar :: navbar"></header>
+
+
+    <!-- CONTENIDO -->
+    <main class="container my-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Editar usuario</h5>
+            <a class="btn btn-outline-secondary" href="/user/list"><i class="bi bi-arrow-left"></i> Volver</a>
+          </div>
+
+          <!-- Formulario de edición usando el objeto 'target' -->
+          <form th:action="@{/user/update}" method="post" class="row g-3">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="id" th:value="${target != null ? target.id : ''}" />
+
+            <div class="col-md-6" sec:authorize="hasRole('ADMIN')">
+              <label for="rut" class="form-label">Usuario (RUT)</label>
+              <input type="text" class="form-control" id="rut" name="rut" th:value="${target != null ? target.rut : ''}" required>
+            </div>
+            <div class="col-md-6">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" th:value="${target != null ? target.nombre : ''}" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="apellido" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="apellido" name="apellido" th:value="${target != null ? target.apellido : ''}">
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" th:value="${target != null ? target.email : ''}">
+            </div>
+
+            <div class="col-md-6">
+              <label for="password" class="form-label">Contraseña nueva</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco para no cambiar" minlength="8" autocomplete="new-password">
+              <div class="form-text">Mínimo 8 caracteres. Usa mayúsculas, minúsculas y números.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="confirm" class="form-label">Confirmar contraseña</label>
+              <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Repita la contraseña" minlength="8" autocomplete="new-password">
+              <div id="matchHelp" class="invalid-feedback">Las contraseñas no coinciden.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="oldPassword" class="form-label">Contraseña actual</label>
+              <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Ingrese su contraseña actual para confirmar cambios" autocomplete="current-password">
+              <div class="form-text">Requerida para cambiar tu propia contraseña.</div>
+            </div>
+
+            <div class="col-md-6" sec:authorize="hasRole('ADMIN')">
+              <label for="role" class="form-label">Rol</label>
+              <select id="role" name="role" class="form-select">
+                <option th:value="'USER'" th:selected="${target != null and (#strings.contains(#strings.toLowerCase(target.rol), 'user'))}">USER</option>
+                <option th:value="'ADMIN'" th:selected="${target != null and (#strings.contains(#strings.toLowerCase(target.rol), 'admin'))}">ADMIN</option>
+              </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+              <a class="btn btn-secondary" href="/user/list" sec:authorize="hasRole('ADMIN')">Cancelar</a>
+              <a class="btn btn-secondary" href="/user/profile" sec:authorize="hasRole('USER')">Cancelar</a>
+              <button id="submitBtn" type="submit" class="btn btn-primary" disabled><i class="bi bi-save"></i> Guardar cambios</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </main>
+
+     <div th:replace="fragments/footer :: footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Validación cliente: fuerza mínima y coincidencia
+      (function() {
+        const pwd = document.getElementById('password');
+        const confirm = document.getElementById('confirm');
+        const oldPwd = document.getElementById('oldPassword');
+        const submit = document.getElementById('submitBtn');
+
+        function strongEnough(value) {
+          if (!value || value.length < 8) return false;
+          const hasUpper = /[A-Z]/.test(value);
+          const hasLower = /[a-z]/.test(value);
+          const hasDigit = /\d/.test(value);
+          return hasUpper && hasLower && hasDigit;
+        }
+
+        function validate() {
+          const newPwd = pwd.value.trim();
+          const confPwd = confirm.value.trim();
+
+          // Si no cambia contraseña, permitir enviar
+          if (newPwd.length === 0 && confPwd.length === 0) {
+            confirm.classList.remove('is-invalid');
+            submit.disabled = false;
+            return;
+          }
+
+          const match = newPwd === confPwd;
+          const strong = strongEnough(newPwd);
+
+          confirm.classList.toggle('is-invalid', !match);
+          pwd.classList.toggle('is-invalid', !strong);
+
+          // Requerir oldPassword si se intenta cambiar contraseña
+          const requireOld = newPwd.length > 0;
+          oldPwd.required = requireOld;
+
+          submit.disabled = !(match && strong && (!requireOld || oldPwd.value.trim().length > 0));
+        }
+
+        ['input','change','keyup'].forEach(evt => {
+          pwd.addEventListener(evt, validate);
+          confirm.addEventListener(evt, validate);
+          oldPwd.addEventListener(evt, validate);
+        });
+        validate();
+      })();
+    </script>
+  </body>
+</html>
