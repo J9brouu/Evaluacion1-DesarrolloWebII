@@ -1,37 +1,31 @@
 # =====================================================
-# DOCKERFILE PARA DESARROLLO CON SPRING BOOT + MAVEN
+# MULTI-STAGE DOCKERFILE PARA PRODUCCIÓN (KOYEB/CLOUD)
 # Sistema de Gestión de Prácticas
 # =====================================================
 #
-# Este Dockerfile ejecuta directamente con Maven (mvn spring-boot:run)
-# IDEAL PARA DESARROLLO: Hot reload, debugging, cambios rápidos
+# Dockerfile optimizado para despliegue en Koyeb/Render/Railway
+# 
+# Características:
+# - Multi-stage build (imagen final ligera ~150MB)
+# - Puerto dinámico compatible con Koyeb ($PORT)
+# - JAR ejecutable standalone
+# - Optimizado para cloud con health checks
 #
-# Ventajas:
-# - Los cambios en código se reflejan automáticamente
-# - No necesitas reconstruir la imagen constantemente
-# - Puedes usar volúmenes para sincronizar src/
-# - Maven descarga dependencias automáticamente
-#
-# Desventajas:
-# - Imagen más pesada (~800MB con Maven + JDK)
-# - NO recomendado para producción
-#
-# @author Sistema de Prácticas
-# @version 1.0-dev
+# @version 2.0-production
 # =====================================================
 
-# Usar imagen con Maven + JDK
-FROM maven:3.9-eclipse-temurin-17-alpine
+# ==================
+# ETAPA 1: BUILD
+# ==================
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
-# Metadatos de la imagen
-LABEL maintainer="Sistema de Prácticas <practicas@universidad.edu>"
-LABEL description="Sistema de Gestión de Prácticas - Modo Desarrollo"
-LABEL version="1.0-dev"
+# Metadatos
+LABEL maintainer="Sistema de Prácticas"
+LABEL stage="builder"
 
-# Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de configuración primero (para aprovechar caché)
+# Copiar dependencias primero (caché Docker)
 COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
@@ -39,35 +33,41 @@ COPY .mvn .mvn
 # Descargar dependencias (se cachea si pom.xml no cambia)
 RUN mvn dependency:go-offline -B
 
-# Copiar el código fuente
+# Copiar código fuente y compilar
 COPY src ./src
-
-# ==================================================
-# COMPILAR Y EMPAQUETAR LA APLICACIÓN
-# ==================================================
-# clean: limpia compilaciones previas
-# package: compila y empaqueta en target/
-# -DskipTests: omite tests para acelerar
-# -B: modo batch (sin interacción)
-# -e: mostrar errores completos
 RUN mvn clean package -DskipTests -B -e
 
-# Verificar que el JAR se creó correctamente
-RUN ls -l target/*.jar
+# Verificar JAR creado
+RUN ls -lh target/*.jar
 
-# Exponer puerto
-EXPOSE 8080
+# ==================
+# ETAPA 2: RUNTIME
+# ==================
+FROM eclipse-temurin:17-jre-alpine
 
-# Variables de entorno
-ENV MAVEN_OPTS="-Xmx512m"
-ENV SPRING_PROFILES_ACTIVE=development
+LABEL maintainer="Sistema de Prácticas"
+LABEL description="Sistema de Gestión de Prácticas - Producción"
+LABEL version="2.0-production"
 
-# =====================================================
-# COMANDO DE INICIO - EJECUTAR CON MAVEN
-# =====================================================
-# spring-boot:run ejecuta la aplicación sin crear JAR
-# Permite hot reload de recursos estáticos (templates, CSS, JS)
-CMD ["mvn", "spring-boot:run"]
+WORKDIR /app
+
+# Copiar solo el JAR compilado desde etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Exponer puerto (Koyeb usa $PORT, default 8000)
+EXPOSE 8000
+
+# Variables de entorno para producción
+ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+ENV SPRING_PROFILES_ACTIVE=production
+
+# Health check para Koyeb/cloud platforms
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8000}/actuator/health || exit 1
+
+# Comando de inicio con puerto dinámico
+# Koyeb inyecta $PORT automáticamente (default 8000)
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8000} -jar app.jar"]
 
 # =====================================================
 # COMANDOS ÚTILES PARA ESTUDIANTES
